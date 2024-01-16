@@ -11,25 +11,39 @@ function logger(req, res, next) {
 
 async function validateUserId(req, res, next) {
   // DO YOUR MAGIC
-  try{
+  try {
     const user = await User.getById(req.params.id)
-    if(!user){
-      res.status(404).json({message: 'user not found'})
-    }else{
+    if (!user) {
+      res.status(404).json({ message: 'user not found' })
+    } else {
       req.user = user;
       next();
     }
-  }catch{
-    res.status(500).json({message: 'User is bad'});
+  } catch {
+    res.status(500).json({ message: 'User is bad' });
   }
 }
 
 function validateUser(req, res, next) {
   // DO YOUR MAGIC
-}
+  const { name } = req.body;
+  if (!name || !name.trim()) {
+    res.status(400).json({ message: 'missing required name field' })
+  } else {
+    req.name = name
+    next()
+  }
+} // All this middle ware function does is check for 'name' to see if it is there are not. This MW Func looks super simple but it is powerful because now I do not Have to keep checking if there is a name or no name in the router file for my codes. Keeps evrything dry. We love that.
 
 function validatePost(req, res, next) {
   // DO YOUR MAGIC
+  const { text } = req.body;
+  if (!text || !text.trim()) {
+    res.status(400).json({ message: 'missing required text field' })
+  } else {
+    req.text = text
+    next()
+  }
 }
 
 // do not forget to expose these functions to other modules
