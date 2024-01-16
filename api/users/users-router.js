@@ -13,8 +13,12 @@ const router = express.Router();
 
 
 
-router.get('/users',  (req, res) => {
-  // RETURN AN ARRAY WITH ALL THE USERS
+router.get('/users',  (req, res, next) => {
+  Users.get()
+  .then(users => {
+    res.json(users);
+  })
+  .catch(next);
 });
 
 router.get('/:id', validateUserId, (req, res) => {
@@ -57,5 +61,12 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   console.log(req.text)
 });
 
+router.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+    customMessage: "Barrrd Aim inside posts router happened",
+    message: err.message,
+    stack: err.stack
+  })
+}) 
 // do not forget to export the router
 module.exports = router;
