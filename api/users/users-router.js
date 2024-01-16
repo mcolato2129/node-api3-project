@@ -13,7 +13,7 @@ const router = express.Router();
 
 
 
-router.get('/users',  (req, res, next) => {
+router.get('/',  (req, res, next) => {
   Users.get()
   .then(users => {
     res.json(users);
@@ -22,8 +22,7 @@ router.get('/users',  (req, res, next) => {
 });
 
 router.get('/:id', validateUserId, (req, res) => {
-  // RETURN THE USER OBJECT
-  // this needs a middleware to verify user id
+  res.json(req.user);
   console.log(req.user)
 });
 
