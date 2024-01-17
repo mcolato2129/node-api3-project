@@ -9,6 +9,17 @@ const {
 // You will need `users-model.js` and `posts-model.js` both
 // The middleware functions also need to be required
 
+//MM NOTES
+
+//All the heavy lifting of the code is done in my MW file to make this part of the code very easy. It is all plug in & use but the Order you plug in the MW COUNTS ON HOW IT WILL RUN. THE PATHING IS IMPORTANT HERE and I need to know what it is I want MY MW to do before i write it and implement it into my routes.
+
+//Lines 1-8, 23, & 100 are very Important and key things to use. MY MW means nothing if I am not importing with require() & getting the correct files.
+
+//express.Router() gives my routes the access of all the stuff i can do with express. i.e.-- route.get, .post, .delete etc.
+
+//line 100 is crucial because my server will have no clue what is going on with my endpoints and thee functionality if I am not exporting to where my server is actually starting.
+
+//MY NOTES
 const router = express.Router();
 
 
