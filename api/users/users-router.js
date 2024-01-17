@@ -1,7 +1,7 @@
 const express = require('express');
 const Users = require('./users-model');
 const Posts = require('../posts/posts-model')
-const { 
+const {
   validateUserId,
   validateUser,
   validatePost,
@@ -13,12 +13,12 @@ const router = express.Router();
 
 
 
-router.get('/',  (req, res, next) => {
+router.get('/', (req, res, next) => {
   Users.get()
-  .then(users => {
-    res.json(users);
-  })
-  .catch(next);
+    .then(users => {
+      res.json(users);
+    })
+    .catch(next);
 });
 
 router.get('/:id', validateUserId, (req, res) => {
@@ -27,51 +27,55 @@ router.get('/:id', validateUserId, (req, res) => {
 
 router.post('/', validateUser, (req, res, next) => {
   // RETURN THE NEWLY CREATED USER OBJECT
-  Users.insert({name: req.name})
-  .then(newUser => {
-    res.status(201).json(newUser);
-  })
-  .catch(next);
+  Users.insert({ name: req.name })
+    .then(newUser => {
+      res.status(201).json(newUser);
+    })
+    .catch(next);
 });
 
 router.put('/:id', validateUserId, validateUser, (req, res, next) => {
-    Users.update(req.params.id, { name: req.name })
+  Users.update(req.params.id, { name: req.name })
     .then(() => {
       return Users.getById(req.params.id)
-      .then(updatedUser => {
-        res.json(updatedUser)
-      })
-      .catch(next)
+        .then(updatedUser => {
+          res.json(updatedUser)
+        })
+        .catch(next)
     })
 });
 
 router.delete('/:id', validateUserId, (req, res, next) => {
   Users.remove(req.params.id)
-  .then(() => {
-    return Users.getById(req.params.id)
     .then(() => {
-      res.json(req.user)
+      return Users.getById(req.params.id)
+        .then(() => {
+          res.json(req.user)
+        })
     })
-  })
-  .catch(next)
+    .catch(next)
 });
 
 router.get('/:id/posts', validateUserId, async (req, res, next) => {
-  try{
+  try {
     const result = await Users.getUserPosts(req.params.id);
     res.json(result);
-  }catch(err){
+  } catch (err) {
     next(err);
-  } 
+  }
 }
 );
 
-router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
-  // RETURN THE NEWLY CREATED USER POST
-  // this needs a middleware to verify user id
-  // and another middleware to check that the request body is valid
-  console.log(req.user)
-  console.log(req.text)
+router.post('/:id/posts', validateUserId, validatePost, async (req, res, next) => {
+  try {
+    const result = await Posts.insert({
+      user_id: req.params.id,
+      text: req.text
+    });
+    res.status(201).json(result);
+  } catch (err) {
+    next(err)
+  }
 });
 
 router.use((err, req, res, next) => {
@@ -80,6 +84,6 @@ router.use((err, req, res, next) => {
     message: err.message,
     stack: err.stack
   })
-}) 
+})
 // do not forget to export the router
 module.exports = router;
