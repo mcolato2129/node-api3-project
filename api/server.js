@@ -9,7 +9,7 @@ server.use(express.json());
 server.use(logger)
 server.use('/api/users', userRouter)
 
-
+//this order of server.use matters!!
 
 // global middlewares and the user's router need to be connected here
 
